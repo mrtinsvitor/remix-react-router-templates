@@ -1,4 +1,4 @@
-import { Outlet, useLoaderData } from "@remix-run/react";
+import { useLoaderData } from "@remix-run/react";
 
 export const loader = async ({ params }) => {
   const response = await fetch(

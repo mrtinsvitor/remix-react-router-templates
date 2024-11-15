@@ -1,4 +1,5 @@
 import { Form, Link, MetaFunction, useLoaderData } from "@remix-run/react";
+import PostsCounter from "./components/posts-counter";
 
 export const meta: MetaFunction = () => {
   return [{ title: "Posts" }, { name: "description", content: "Posts page" }];
@@ -23,6 +24,8 @@ export default function PostsList() {
           </button>
         </Link>
       </div>
+
+      <PostsCounter />
 
       <ul className="space-y-4">
         {posts.map((post) => (
