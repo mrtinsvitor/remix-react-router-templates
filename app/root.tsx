@@ -43,3 +43,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
 export default function App() {
   return <Outlet />;
 }
+
+export function ErrorBoundary() {
+  return <h1>Oops something wrong happened</h1>;
+}

@@ -1,12 +1,21 @@
-import { json, useLoaderData } from "@remix-run/react";
+import { ActionFunctionArgs } from "@remix-run/node";
+import { redirect, useLoaderData } from "@remix-run/react";
 
 export const loader = async ({ params }) => {
   const response = await fetch(
     `https://jsonplaceholder.typicode.com/users/${params.slug}`
   );
   const user = await response.json();
-  console.log(user);
-  return json(user);
+  return Response.json(user);
+};
+
+export const action = async ({ params }: ActionFunctionArgs) => {
+  await fetch(`http://localhost:3000/users/${params.slug}`, {
+    method: "DELETE",
+    headers: { "Content-Type": "application/json" },
+  });
+
+  return redirect("/app/users");
 };
 
 export default function PostDetails() {

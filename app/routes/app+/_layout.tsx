@@ -1,16 +1,32 @@
-import { NavLink, Outlet } from "@remix-run/react";
+import { Link, NavLink, Outlet } from "@remix-run/react";
 
 export default function DashboardLayout() {
   return (
     <div className="flex h-screen">
       {/* Sidebar */}
       <div className="w-64 bg-gray-100 p-4">
-        <h1 className="text-xl font-bold mb-4">Dashboard</h1>
-        <nav className="space-y-2">
-          <NavLink to="posts" className="block p-2 hover:bg-gray-200 rounded">
+        <Link to="." className="text-xl font-bold py-4">
+          Dashboard
+        </Link>
+        <nav className="mt-4 space-y-2">
+          <NavLink
+            to="posts"
+            className={({ isActive }) =>
+              `block p-2 hover:bg-blue-400 rounded hover:text-white ${
+                isActive ? "bg-blue-400 text-white" : ""
+              }`
+            }
+          >
             Posts
           </NavLink>
-          <NavLink to="users" className="block p-2 hover:bg-gray-200 rounded">
+          <NavLink
+            to="users"
+            className={({ isActive }) =>
+              `block p-2 hover:bg-blue-200 rounded hover:text-white ${
+                isActive ? "bg-blue-400 text-white" : ""
+              }`
+            }
+          >
             Users
           </NavLink>
           {/* Add more navigation items here */}

@@ -1,16 +1,15 @@
-import { json, useLoaderData } from "@remix-run/react";
+import { Outlet, useLoaderData } from "@remix-run/react";
 
 export const loader = async ({ params }) => {
   const response = await fetch(
     `https://jsonplaceholder.typicode.com/comments?postId=${params.slug}`
   );
   const comments = await response.json();
-  return json(comments);
+  return Response.json(comments);
 };
 
 export default function Comments() {
   const comments: any = useLoaderData();
-  console.log(comments);
 
   return (
     <div className="p-4">
