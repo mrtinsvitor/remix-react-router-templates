@@ -6,13 +6,19 @@ import {
   redirect,
   useLoaderData,
   useLocation,
+  useRouteError,
 } from "@remix-run/react";
-import { Post } from "~/types/post";
+import invariant from "tiny-invariant";
+import { getPostById } from "~/api/posts";
 
 export const loader = async ({ params }: LoaderFunctionArgs) => {
   const { slug } = params;
-  const response = await fetch(`http://localhost:3000/posts/${slug}`);
-  const post: Post = await response.json();
+  invariant(slug, "slug is required");
+
+  const post = await getPostById(slug);
+  if (!post || ("statusCode" in post && post.statusCode === 404)) {
+    throw new Response("Post not found", { status: 404 });
+  }
   return post;
 };
 
@@ -70,4 +76,9 @@ export default function PostDetails() {
       </div>
     </div>
   );
+}
+
+export function ErrorBoundary() {
+  const error: unknown = useRouteError();
+  return <div>Error: {error?.data || "Unknown error"}</div>;
 }

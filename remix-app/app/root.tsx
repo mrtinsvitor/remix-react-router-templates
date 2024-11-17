@@ -7,7 +7,7 @@ import {
   Scripts,
   ScrollRestoration,
 } from "@remix-run/react";
-import "./tailwind.css";
+import "./styles/tailwind.css";
 import { User } from "./types/user";
 import { getUserData } from "./utils/auth";
 

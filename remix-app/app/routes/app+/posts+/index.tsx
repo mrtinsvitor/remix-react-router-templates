@@ -1,30 +1,17 @@
-import { LoaderFunctionArgs } from "@remix-run/node";
-import {
-  Form,
-  Link,
-  MetaFunction,
-  useLoaderData,
-  useRouteLoaderData,
-} from "@remix-run/react";
-import { type loader as rootLoader } from "~/root";
-import { Post } from "~/types/post";
+import { Form, Link, MetaFunction, useLoaderData } from "@remix-run/react";
+import { getPosts } from "~/api/posts";
 import PostsCounter from "./components/posts-counter";
 
 export const meta: MetaFunction = () => {
   return [{ title: "Posts" }, { name: "description", content: "Posts page" }];
 };
 
-export async function loader({ context }: LoaderFunctionArgs) {
-  console.log({ context });
-
-  const response = await fetch("http://localhost:3000/posts");
-  const posts: Post[] = await response.json();
+export async function loader() {
+  const posts = await getPosts();
   return posts;
 }
 
 export default function PostsList() {
-  const user = useRouteLoaderData<typeof rootLoader>("root");
-
   const posts = useLoaderData<typeof loader>();
 
   return (

@@ -1,8 +1,4 @@
-import type {
-  ActionFunctionArgs,
-  LoaderFunctionArgs,
-  MetaFunction,
-} from "@remix-run/node";
+import type { MetaFunction } from "@remix-run/node";
 import { Form, redirect, useRouteError } from "@remix-run/react";
 import { getUserId, setUserId } from "~/utils/auth";
 
@@ -13,8 +9,8 @@ export const meta: MetaFunction = () => {
   ];
 };
 
-export async function loader({ request }: LoaderFunctionArgs) {
-  const user = await getUserId(request);
+export async function loader() {
+  const user = getUserId();
   if (user) {
     throw redirect("/app");
   }
@@ -22,7 +18,7 @@ export async function loader({ request }: LoaderFunctionArgs) {
   return null;
 }
 
-export async function action({ request }: ActionFunctionArgs) {
+export async function action() {
   const user = setUserId(1);
   if (!user) {
     throw new Response("User not found", { status: 404 });
