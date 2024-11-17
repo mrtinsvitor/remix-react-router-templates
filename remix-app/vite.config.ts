@@ -1,7 +1,6 @@
 import { vitePlugin as remix } from "@remix-run/dev";
 import { defineConfig } from "vite";
 import tsconfigPaths from "vite-tsconfig-paths";
-import { flatRoutes } from "remix-flat-routes";
 
 declare module "@remix-run/node" {
   interface Future {
@@ -12,7 +11,6 @@ declare module "@remix-run/node" {
 export default defineConfig({
   plugins: [
     remix({
-      ignoredRouteFiles: ["**/*"],
       future: {
         unstable_optimizeDeps: true,
         v3_fetcherPersist: true,
@@ -21,23 +19,39 @@ export default defineConfig({
         v3_throwAbortReason: true,
         v3_singleFetch: true,
       },
-      routes: async (defineRoutes) => {
-        return flatRoutes("routes", defineRoutes, {
-          ignoredRouteFiles: [
-            ".*",
-            "**/*.css",
-            "**/*.test.{js,jsx,ts,tsx}",
-            "**/__*.*",
-            // This is for server-side utilities you want to colocate
-            // next to your routes without making an additional
-            // directory. If you need a route that includes "server" or
-            // "client" in the filename, use the escape brackets like:
-            // my-route.[server].tsx
-            "**/*.server.*",
-            "**/*.client.*",
-          ],
-        });
-      },
+      routes: async (defineRoutes) =>
+        defineRoutes((route) => {
+          route("/", "routes/welcome/page.tsx");
+
+          route("app", "routes/dashboard/layout.tsx", () => {
+            route("/app", "routes/dashboard/index.tsx");
+
+            /* Posts */
+            route("/app/posts", "routes/dashboard/posts/page.tsx");
+            route(
+              "/app/posts/:slug",
+              "routes/dashboard/posts/pages/details.tsx",
+              () => {
+                route(
+                  "/app/posts/:slug/comments",
+                  "routes/dashboard/posts/pages/comments.tsx"
+                );
+              }
+            );
+            route(
+              "/app/posts/add-post",
+              "routes/dashboard/posts/pages/add-post.tsx"
+            );
+
+            /* Users */
+            route("/app/users", "routes/dashboard/users/page.tsx");
+            route("/app/users/:slug", "routes/dashboard/users/pages/user.tsx");
+            route(
+              "/app/users/add-user",
+              "routes/dashboard/users/pages/add-user.tsx"
+            );
+          });
+        }),
     }),
     tsconfigPaths(),
   ],
