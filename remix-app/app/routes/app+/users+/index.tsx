@@ -1,13 +1,22 @@
+import { LoaderFunctionArgs } from "@remix-run/node";
 import { Form, Link, useLoaderData } from "@remix-run/react";
+import { User } from "~/types/user";
+import { getUserData, requireAdminUser } from "~/utils/auth";
 
-export const loader = async () => {
+export const loader = async ({
+  params,
+  request,
+  context,
+}: LoaderFunctionArgs) => {
+  console.log(params, request, context);
+  requireAdminUser(getUserData());
   const response = await fetch("http://localhost:3000/users");
-  const users = await response.json();
-  return Response.json(users);
+  const users: User[] = await response.json();
+  return users;
 };
 
 export default function UsersList() {
-  const users: any = useLoaderData<typeof loader>();
+  const users = useLoaderData<typeof loader>();
 
   return (
     <div className="p-4">

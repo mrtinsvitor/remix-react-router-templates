@@ -15,7 +15,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
 };
 
 export default function AddUser() {
-  const actionData: any = useActionData<typeof action>();
+  const actionData = useActionData<typeof action>();
 
   return (
     <div className="p-4">

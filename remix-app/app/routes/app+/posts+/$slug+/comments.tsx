@@ -1,20 +1,31 @@
-import { useLoaderData } from "@remix-run/react";
+import { LoaderFunctionArgs } from "@remix-run/node";
+import { useLoaderData, useRouteLoaderData } from "@remix-run/react";
+import { type loader as rootLoader } from "~/root";
 
-export const loader = async ({ params }) => {
+interface Comment {
+  id: string;
+  name: string;
+  email: string;
+  body: string;
+}
+
+export const loader = async ({ params }: LoaderFunctionArgs) => {
   const response = await fetch(
     `https://jsonplaceholder.typicode.com/comments?postId=${params.slug}`
   );
-  const comments = await response.json();
-  return Response.json(comments);
+  const comments: Comment[] = await response.json();
+  return comments;
 };
 
 export default function Comments() {
-  const comments: any = useLoaderData();
+  const comments = useLoaderData<typeof loader>();
+  const { user } = useRouteLoaderData<typeof rootLoader>("root");
 
   return (
     <div className="p-4">
       <h2 className="text-2xl font-bold mb-4">Comments</h2>
 
+      <p>Hey {user.name} 👋</p>
       <ul className="space-y-4">
         {comments.map((comment) => (
           <li key={comment.id} className="border p-4 rounded">

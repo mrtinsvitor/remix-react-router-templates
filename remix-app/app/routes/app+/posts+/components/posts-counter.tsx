@@ -1,8 +1,8 @@
 import { useLoaderData } from "@remix-run/react";
-import { loader } from "../$slug+/_layout";
+import type { loader as postsLoader } from "..";
 
 export default function PostsCounter() {
-  const posts: any = useLoaderData<typeof loader>();
+  const posts = useLoaderData<typeof postsLoader>();
 
   return (
     <div className="text-sm mb-4">

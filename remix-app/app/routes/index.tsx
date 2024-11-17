@@ -1,5 +1,10 @@
-import type { MetaFunction } from "@remix-run/node";
-import { Link } from "@remix-run/react";
+import type {
+  ActionFunctionArgs,
+  LoaderFunctionArgs,
+  MetaFunction,
+} from "@remix-run/node";
+import { Form, redirect, useRouteError } from "@remix-run/react";
+import { getUserId, setUserId } from "~/utils/auth";
 
 export const meta: MetaFunction = () => {
   return [
@@ -7,6 +12,24 @@ export const meta: MetaFunction = () => {
     { name: "description", content: "Welcome to Remix!" },
   ];
 };
+
+export async function loader({ request }: LoaderFunctionArgs) {
+  const user = await getUserId(request);
+  if (user) {
+    throw redirect("/app");
+  }
+
+  return null;
+}
+
+export async function action({ request }: ActionFunctionArgs) {
+  const user = setUserId(1);
+  if (!user) {
+    throw new Response("User not found", { status: 404 });
+  }
+
+  return redirect("/app");
+}
 
 export default function Home() {
   return (
@@ -30,9 +53,17 @@ export default function Home() {
           </div>
         </header>
         <nav className="flex flex-col items-center justify-center gap-4 rounded-3xl border border-gray-200 p-6 dark:border-gray-700">
-          <Link to="/app">Go to app</Link>
+          <Form method="post">
+            <button type="submit">Login</button>
+          </Form>
         </nav>
       </div>
     </div>
   );
+}
+
+export function ErrorBoundary() {
+  const error = useRouteError();
+  console.log(error);
+  return <div>Error: {error?.data || "Unknown error"}</div>;
 }

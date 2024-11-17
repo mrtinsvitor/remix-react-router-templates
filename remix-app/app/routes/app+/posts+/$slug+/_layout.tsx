@@ -1,4 +1,4 @@
-import { ActionFunctionArgs } from "@remix-run/node";
+import { ActionFunctionArgs, LoaderFunctionArgs } from "@remix-run/node";
 import {
   Form,
   Link,
@@ -7,12 +7,13 @@ import {
   useLoaderData,
   useLocation,
 } from "@remix-run/react";
+import { Post } from "~/types/post";
 
-export const loader = async ({ params }) => {
+export const loader = async ({ params }: LoaderFunctionArgs) => {
   const { slug } = params;
   const response = await fetch(`http://localhost:3000/posts/${slug}`);
-  const post = await response.json();
-  return Response.json(post);
+  const post: Post = await response.json();
+  return post;
 };
 
 export const action = async ({ params }: ActionFunctionArgs) => {
@@ -25,7 +26,7 @@ export const action = async ({ params }: ActionFunctionArgs) => {
 };
 
 export default function PostDetails() {
-  const post: any = useLoaderData();
+  const post = useLoaderData<typeof loader>();
   const location = useLocation();
 
   const isCommentsActive = location.pathname.includes("comments");

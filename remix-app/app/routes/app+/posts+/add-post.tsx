@@ -5,6 +5,12 @@ export const action = async ({ request }: ActionFunctionArgs) => {
   const formData = await request.formData();
   const newPost = Object.fromEntries(formData);
 
+  if (newPost.title === "" || newPost.content === "") {
+    return {
+      errors: { title: "Title is required", content: "Content is required" },
+    };
+  }
+
   await fetch("http://localhost:3000/posts", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -15,7 +21,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
 };
 
 export default function AddPost() {
-  const actionData: any = useActionData<typeof action>();
+  const actionData = useActionData<typeof action>();
 
   return (
     <div className="p-4">
@@ -51,7 +57,9 @@ export default function AddPost() {
           Add Post
         </button>
       </Form>
-      {actionData?.error && <p className="text-red-500">{actionData.error}</p>}
+      {actionData?.errors && (
+        <p className="text-red-500">{actionData.errors.title}</p>
+      )}
     </div>
   );
 }
